@@ -1,4 +1,4 @@
-const GOOGLE_API_KEY = "AIzaSyCJ-wUiCXECizH9PWrB9N3hE6Qzn5lcEY8";
+import { GOOGLE_API_KEY } from './config.js';
 
 // Fetch place info from Google Places API
 async function fetchPlaceData(name, location = "") {
