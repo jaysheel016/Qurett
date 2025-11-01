@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Qurett</title>
+
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background: #fff;
+        color: #222;
+        width: 340px;
+        margin: 0;
+        padding: 0;
+        animation: fadeIn 0.25s ease;
+      }
+
+      .container {
+        background: #fff;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+        padding: 12px;
+        position: relative;
+      }
+
+      .property-card {
+        display: flex;
+        gap: 12px;
+      }
+
+      .property-image-container {
+        position: relative;
+        width: 130px;
+        height: 145px;
+      }
+
+      .property-image {
+        width: 100%;
+        height: 100%;
+        border-radius: 14px;
+        object-fit: cover;
+        background-color: #eee;
+      }
+
+      .heart-icon {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.85);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      .heart-icon.saved svg {
+        fill: #e53935;
+        stroke: #e53935;
+      }
+
+      .heart-icon svg {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke: #e53935;
+        stroke-width: 2;
+      }
+
+      .property-details {
+        flex: 1;
+      }
+
+      .property-title {
+        font-size: 15px;
+        font-weight: 600;
+        margin: 0 0 4px;
+      }
+
+      .city-map {
+        font-size: 13px;
+        color: #555;
+        margin-bottom: 4px;
+      }
+
+      .map-link {
+        font-size: 12px;
+        color: #0078ff;
+        text-decoration: none;
+      }
+
+      .map-link:hover {
+        text-decoration: underline;
+      }
+
+      .rating-row {
+        margin-top: 8px;
+        font-size: 13px;
+        line-height: 1.4;
+        color: #2e7d32;
+      }
+
+      .rating-row a {
+        color: #0078ff;
+        text-decoration: none;
+        font-size: 12px;
+      }
+
+      .rating-row a:hover {
+        text-decoration: underline;
+      }
+
+      hr {
+        border: none;
+        border-top: 1px solid #ddd;
+        margin: 10px 0;
+      }
+
+      .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .row {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      button {
+        flex: 1;
+        border: none;
+        padding: 8px;
+        border-radius: 8px;
+        background: #f3f6ff;
+        cursor: pointer;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+      }
+
+      button:hover {
+        background: #e1ecff;
+      }
+
+      footer {
+        text-align: center;
+        font-size: 11px;
+        color: #777;
+        margin-top: 10px;
+      }
+
+      .footer-brand {
+        font-weight: 600;
+        color: #0078ff;
+      }
+
+      /* ✅ Overlay container for shortlist + summary */
+      .shortlist-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.98);
+        border-radius: 18px;
+        box-shadow: 0 0 14px rgba(0, 0, 0, 0.2);
+        padding: 14px;
+        display: none;
+        flex-direction: column;
+        overflow-y: auto;
+        scrollbar-width: auto;
+        z-index: 100;
+      }
+
+      .shortlist-overlay.active {
+        display: flex;
+      }
+
+      .shortlist-overlay button {
+        z-index: 9999 !important;
+      }
+
+      .shortlist-close {
+        position: absolute;
+        top: 10px;
+        right: 18px;
+        background: none;
+        border: none;
+        color: #e53935;
+        font-size: 20px;
+        cursor: pointer;
+        z-index: 9999;
+      }
+
+      .shortlist-close:hover {
+        color: #b71c1c;
+      }
+
+      /* ✅ AI Summary content styling (Clean + Unified) */
+      .ai-summary-content {
+        padding: 14px 16px;
+        max-height: 300px;
+        overflow-y: auto;
+        word-wrap: break-word;
+        line-height: 1.55;
+        color: #222;
+        font-size: 13.5px;
+        white-space: normal;
+        margin: 0;
+      }
+
+      .ai-summary-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin: 4px 0 6px 0;
+        color: #111;
+      }
+
+      .ai-summary-divider {
+        border: none;
+        border-top: 1px solid #e0e0e0;
+        margin: 6px 0 10px;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="property-card">
+        <div class="property-image-container">
+          <img
+            id="property-image"
+            src="/assets/placeholder.png"
+            alt="Property Image"
+            class="property-image"
+          />
+          <div id="save-heart" class="heart-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path
+                d="M12 21s-6-4.35-9.33-8.1C.9 10.13 1.1 6.48 3.9 4.5 6.7 2.52 9.66 3.69 12 6.25c2.34-2.56 5.3-3.73 8.1-1.75 2.8 1.98 3 5.63.33 8.4C18 16.65 12 21 12 21z"
+              />
+            </svg>
+          </div>
+        </div>
+
+        <div class="property-details">
+          <h2 id="property-title" class="property-title">Detecting Property...</h2>
+          <p id="city-name" class="city-map"></p>
+          <a id="map-button" class="map-link" href="#">📍 View on Map</a>
+
+          <div id="rating" class="rating-row"></div>
+        </div>
+      </div>
+
+      <hr />
+
+      <div class="actions">
+        <div class="row">
+          <button id="bookdirect-button">🌍 Compare & Book</button>
+          <button id="bulk-inquiry">📄 Send Inquiry</button>
+        </div>
+        <div class="row">
+          <button id="website-tab">🌐 Website</button>
+          <button id="whatsapp-button">💬 WhatsApp</button>
+        </div>
+        <div class="row">
+          <button id="call-button">📞 Call</button>
+          <button id="view-shortlist">📋 View Shortlist</button>
+        </div>
+      </div>
+
+      <footer>
+  <p style="font-size:11px;line-height:1.4;">
+    💬 Have a feedback? 
+    <a href="https://qurett.com/contact" target="_blank" style="color:#0078ff;text-decoration:none;font-weight:500;">
+      Write here
+    </a>
+  </p>
+</footer>
+
+
+      <div class="shortlist-overlay" id="shortlist-overlay">
+        <!-- JS dynamically injects AI Summary or shortlist -->
+      </div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
