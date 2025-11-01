@@ -9,7 +9,7 @@
 // ✅ Final fixes: Image, Send Inquiry (overlay), Delete alignment, WhatsApp full draft
 // ----------------------------------------------------------------------
 
-const GOOGLE_API_KEY = "AIzaSyCJ-wUiCXECizH9PWrB9N3hE6Qzn5lcEY8";
+const GOOGLE_API_KEY from './config.js';
 
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("✅ Qurett popup loaded (Final Submission)");
